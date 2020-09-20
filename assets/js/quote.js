@@ -16,7 +16,6 @@ $(document).ready(function () {
     $('#standard').on('click', function () {
         document.getElementById('elevPriceUnit').value = (7565).toFixed(2) + " $";
         doCalc();
-        checkNaN();
     });
 
     $("#premium").on("click", function () {
@@ -57,28 +56,6 @@ $(document).ready(function () {
     function getInfoMaxOcc() {
         maxOcc = parseInt($('#maxOcc').val(), 10);
     };
-
-    function checkNaN() {
-        if (isNan(parseFloat($('#numElev_3').val(), 10))) {
-            $('#numElev_3').val('');
-        }
-
-        if (isNan(parseFloat($('#numElev_2').val(), 10))) {
-            $('#numElev_2').val('');
-        }
-
-        if (isNan(parseFloat($('#elevTotal').val(), 10))) {
-            $('#elevTotal').val('');
-        }
-        
-        if (isNan(parseFloat($('#installationFee').val(), 10))) {
-            $('#installationFee').val('');
-        }
-
-        if (isNan(parseFloat($('#total_').val(), 10))) {
-            $('#total_').val('');
-        }
-    }
 
     function getProdRange() {
         if ($('#standard').is(':checked')) {
@@ -123,8 +100,7 @@ $(document).ready(function () {
     };
 
     function emptyElevatorsNumberAndPricesFields() {
-        $('#numElev_2, #numElev_3').val('');
-        $('.priceField').val('');
+        $('#numElev_2, #numElev_3, .priceField').val('');
     };
 
     function createFormData(projectType) {
@@ -133,6 +109,7 @@ $(document).ready(function () {
             numberFloors: numFloors,
             numberBase: numBase,
             maximumOcc: maxOcc,
+            numberElev: numElev,
             productRange: prodRange,
             projectType: projectType
         }
@@ -210,6 +187,10 @@ $(document).ready(function () {
                 if (prodRange.type != null) {
                     setPricesResults(data.finalNumElev, data.subTotal, data.installationFee, data.grandTotal);
                 }
+                
+                if (isNaN(parseInt($('#numElev_2').val()))) {
+                    emptyElevatorsNumberAndPricesFields();
+                }
             }
         });
     }
@@ -217,18 +198,15 @@ $(document).ready(function () {
     function doCalc() {
         if ($('#residential').hasClass('active') && negativeValues()) {
             apiCall('residential');
-            checkNaN();
         } else if ($('#commercial').hasClass('active') && negativeValues()) {
             apiCall('commercial');
-            checkNaN();
         } else if ($('#corporate').hasClass('active') && negativeValues()) {
             apiCall('corporate');
-            checkNaN();
         } else if ($('#hybrid').hasClass('active') && negativeValues()) {
             apiCall('hybrid');
-            checkNaN();
         } else {
             emptyElevatorsNumberAndPricesFields();
         };
+
     };
 });
